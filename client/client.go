@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://greenbay-network-rest-insightful-bat.mybluemix.net/api"
+	defaultBaseURL = "https://greenbay-network-rest-insightful-bat.mybluemix.net/api/"
 )
 
 type Client struct {
@@ -31,6 +31,8 @@ type Client struct {
 
 	common Service
 
+	Addresses    *AddressService
+	Deposits    *DepositService
 	Blocks       *BlocksService
 	Delegates    *DelegatesService
 	Node         *NodeService
@@ -55,6 +57,8 @@ func NewClient(httpClient *http.Client) *Client {
 	c.common.client = c
 
 	c.Blocks = (*BlocksService)(&c.common)
+	c.Deposits = (*DepositService)(&c.common)
+	c.Addresses = (*AddressService)(&c.common)
 	c.Delegates = (*DelegatesService)(&c.common)
 	c.Node = (*NodeService)(&c.common)
 	c.Peers = (*PeersService)(&c.common)
