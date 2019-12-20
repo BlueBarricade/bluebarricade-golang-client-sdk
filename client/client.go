@@ -31,9 +31,13 @@ type Client struct {
 
 	common Service
 
-	Addresses    *AddressService
-	Deposits    *DepositService
-	Blocks       *BlocksService
+	Addresses      *AddressService
+	Deposits       *DepositService
+	LockBalances   *LockBalanceService
+	UnlockBalances *UnlockBalanceService
+	Transfers      *TransferService
+	Withdraws      *WithdrawService
+
 	Delegates    *DelegatesService
 	Node         *NodeService
 	Peers        *PeersService
@@ -56,9 +60,14 @@ func NewClient(httpClient *http.Client) *Client {
 	c := &Client{client: httpClient, BaseURL: baseURL}
 	c.common.client = c
 
-	c.Blocks = (*BlocksService)(&c.common)
+	// c.Blocks = (*BlocksService)(&c.common)
 	c.Deposits = (*DepositService)(&c.common)
 	c.Addresses = (*AddressService)(&c.common)
+	c.LockBalances = (*LockBalanceService)(&c.common)
+	c.UnlockBalances = (*UnlockBalanceService)(&c.common)
+	c.Transfers = (*TransferService)(&c.common)
+	c.Withdraws = (*WithdrawService)(&c.common)
+
 	c.Delegates = (*DelegatesService)(&c.common)
 	c.Node = (*NodeService)(&c.common)
 	c.Peers = (*PeersService)(&c.common)

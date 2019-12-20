@@ -17,22 +17,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Deposit struct {
-	Class         string    `json:"$class,omitempty"`
-	ToAddress     string    `json:"to_address,omitempty"`
-	TransactionId string    `json:"transactionId,omitempty"`
-	DepositAmount float32   `json:"deposit_amount,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+type Withdraw struct {
+	Class          string    `json:"$class,omitempty"`
+	FromAddress    string    `json:"from_address,omitempty"`
+	WithdrawAmount float32   `json:"withdraw_amount,omitempty"`
+	TransactionId  string    `json:"transactionId,omitempty"`
+	Timestamp      time.Time `json:"timestamp,omitempty"`
 }
 
 // AddressService handles communication with the addresses related
 // methods of the Bluebarricade Core API - Version 2.
-type DepositService Service
+type WithdrawService Service
 
-func (s *DepositService) List(ctx context.Context, query *Pagination) ([]*Deposit, *http.Response, error) {
-	uri := fmt.Sprintf("depositMoneyFromExternal")
+func (s *WithdrawService) List(ctx context.Context, query *Pagination) ([]*Withdraw, *http.Response, error) {
+	uri := fmt.Sprintf("transferMoneyFromExternal")
 
-	var responseStruct []*Deposit
+	var responseStruct []*Withdraw
 	resp, err := s.client.SendRequest(ctx, "GET", uri, nil, nil, &responseStruct)
 
 	if err != nil {
@@ -42,10 +42,10 @@ func (s *DepositService) List(ctx context.Context, query *Pagination) ([]*Deposi
 	return responseStruct, resp, err
 }
 
-func (s *DepositService) Get(ctx context.Context, id string) (*Deposit, *http.Response, error) {
-	uri := fmt.Sprintf("depositMoneyFromExternal/%s", id)
+func (s *WithdrawService) Get(ctx context.Context, id string) (*Withdraw, *http.Response, error) {
+	uri := fmt.Sprintf("transferMoneyFromExternal/%s", id)
 
-	var responseStruct *Deposit
+	var responseStruct *Withdraw
 	resp, err := s.client.SendRequest(ctx, "GET", uri, nil, nil, &responseStruct)
 
 	if err != nil {
@@ -55,10 +55,10 @@ func (s *DepositService) Get(ctx context.Context, id string) (*Deposit, *http.Re
 	return responseStruct, resp, err
 }
 
-func GetDeposits(w http.ResponseWriter, r *http.Request) {
+func GetWithdraws(w http.ResponseWriter, r *http.Request) {
 	client := NewClient(nil)
 	query := &Pagination{Limit: 1}
-	responseStruct, _, err := client.Deposits.List(context.Background(), query)
+	responseStruct, _, err := client.Withdraws.List(context.Background(), query)
 	if err != nil {
 		fmt.Println("Error", err)
 	}
@@ -68,12 +68,12 @@ func GetDeposits(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(responseStruct)
 }
 
-func GetDeposit(w http.ResponseWriter, r *http.Request) {
+func GetWithdraw(w http.ResponseWriter, r *http.Request) {
 	address := mux.Vars(r)["id"]
 
 	fmt.Println("GetAddress", address)
 	client := NewClient(nil)
-	responseStruct, _, err := client.Deposits.Get(context.Background(), address)
+	responseStruct, _, err := client.Withdraws.Get(context.Background(), address)
 	if err != nil {
 		fmt.Println("Error", err)
 	}

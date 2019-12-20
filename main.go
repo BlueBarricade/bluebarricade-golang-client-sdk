@@ -10,7 +10,6 @@ package main
 import (
 	"log"
 	"net/http"
-	
 
 	"./client"
 	"github.com/gorilla/mux"
@@ -30,7 +29,7 @@ func main() {
 	router.HandleFunc(baseURLPath+"/lockbalances", client.GetLockBalances).Methods("GET")
 	router.HandleFunc(baseURLPath+"/lockbalances/{id}", client.GetLockBalance).Methods("GET")
 	router.HandleFunc(baseURLPath+"/unlockbalances", client.GetUnlockBalances).Methods("GET")
-	router.HandleFunc(baseURLPath+"/unlockbalances/{id}", client.GetUnlockBalances).Methods("GET")
+	router.HandleFunc(baseURLPath+"/unlockbalances/{id}", client.GetUnlockBalance).Methods("GET")
 	router.HandleFunc(baseURLPath+"/transfers", client.GetTransfers).Methods("GET")
 	router.HandleFunc(baseURLPath+"/transfers/{id}", client.GetTransfer).Methods("GET")
 	router.HandleFunc(baseURLPath+"/withdraws", client.GetWithdraws).Methods("GET")
