@@ -1,5 +1,5 @@
 build:
-	go build -o ./dist/golangapi main.go
+	GO_ENV=CGO_ENABLED=0 GOOS=linux go build -o ./dist/golangapi main.go
 
 run:
 	go run main.go
