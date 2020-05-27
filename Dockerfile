@@ -27,24 +27,14 @@ FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
 
-RUN mkdir -p /root/config/
 WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/dist/ /root/
-COPY --from=builder /app/dist/conf.local.yaml /root/config/
 
 # Expose port 8080 to the outside world
-EXPOSE 8080
+EXPOSE 9999
 
-ENV COMPUTOP_PASSWORD=none
 ENV ENVIRONMENT=development
 
-VOLUME /root/config
-VOLUME /var/log
-
-RUN apk add --no-cache bash
-
-# Command to run the executable
-ENTRYPOINT [ "/bin/bash", "./start-server.sh" ]
-CMD ["-p", "/root/config/conf.local.yaml"] 
+CMD ["/root/golangapi"]
