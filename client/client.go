@@ -13,11 +13,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/google/go-querystring/query"
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -56,6 +59,15 @@ func NewClient(httpClient *http.Client) *Client {
 	}
 
 	baseURL, _ := url.Parse(defaultBaseURL)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	envBaseUrl := os.Getenv("BASE_URL")
+	if envBaseUrl != "" {
+		baseURL, _ = url.Parse(defaultBaseURL)
+	}
 
 	c := &Client{client: httpClient, BaseURL: baseURL}
 	c.common.client = c
