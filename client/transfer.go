@@ -130,8 +130,8 @@ func GetTransfer(w http.ResponseWriter, r *http.Request) {
 // }
 
 // GetHistorian
-func GetHistorian() ([]*Historian, error) {
-	client := NewClient(nil)
+func GetHistorian(baseURL string) ([]*Historian, error) {
+	client := NewClient1(baseURL, nil)
 	query := &Pagination{Limit: 10}
 	responseStruct, _, err := client.Transfers.ListHistorian(context.Background(), query)
 	if err != nil {
