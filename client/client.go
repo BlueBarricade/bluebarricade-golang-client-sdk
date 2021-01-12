@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://greenbay-network-rest-insightful-bat.mybluemix.net/api/"
+	defaultBaseURL = "http://153.112.160.162:3000/api/"
 )
 
 type Client struct {

@@ -27,9 +27,40 @@ type Transfer struct {
 	Timestamp     time.Time `json:"timestamp,omitempty"`
 }
 
+type Historian struct {
+	Class                string           `json:"$class,omitempty"`
+	TransactionId        string           `json:"transactionId,omitempty"`
+	TransactionType      string           `json:"transactionType,omitempty"`
+	TransactionInvoked   string           `json:"transactionInvoked,omitempty"`
+	ParticipantInvoking  string           `json:"participantInvoking,omitempty"`
+	IdentityUsed         string           `json:"identityUsed,omitempty"`
+	EventsEmittedList    []*EventsEmitted `json:"eventsEmitted,omitempty"`
+	TransactionTimestamp time.Time        `json:"transactionTimestamp,omitempty"`
+}
+
+type EventsEmitted struct {
+	Class         string    `json:"$class,omitempty"`
+	ToAddress     string    `json:"to_address,omitempty"`
+	DepositAmount float32   `json:"deposit_amount,omitempty"`
+	EventId       string    `json:"eventId,omitempty"`
+	Timestamp     time.Time `json:"timestamp,omitempty"`
+}
+
 // AddressService handles communication with the addresses related
 // methods of the Bluebarricade Core API - Version 2.
 type TransferService Service
+
+func (s *TransferService) ListHistorian(ctx context.Context, query *Pagination) ([]*Historian, *http.Response, error) {
+	uri := fmt.Sprintf("system/historian")
+
+	var responseStruct []*Historian
+	resp, err := s.client.SendRequest(ctx, "GET", uri, nil, nil, &responseStruct)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return responseStruct, resp, err
+}
 
 func (s *TransferService) List(ctx context.Context, query *Pagination) ([]*Transfer, *http.Response, error) {
 	uri := fmt.Sprintf("transferMoneyFromExternal")
@@ -83,4 +114,30 @@ func GetTransfer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(responseStruct)
+}
+
+// func GetHistorian(w http.ResponseWriter, r *http.Request) {
+// 	client := NewClient(nil)
+// 	query := &Pagination{Limit: 10}
+// 	responseStruct, _, err := client.Transfers.ListHistorian(context.Background(), query)
+// 	if err != nil {
+// 		fmt.Println("Error", err)
+// 	}
+
+// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(responseStruct)
+// }
+
+// GetHistorian
+func GetHistorian() ([]*Historian, error) {
+	client := NewClient(nil)
+	query := &Pagination{Limit: 10}
+	responseStruct, _, err := client.Transfers.ListHistorian(context.Background(), query)
+	if err != nil {
+		fmt.Println("Error", err)
+		return nil, err
+	}
+
+	return responseStruct, nil
 }

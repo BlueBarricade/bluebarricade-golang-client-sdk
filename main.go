@@ -34,5 +34,6 @@ func main() {
 	router.HandleFunc(baseURLPath+"/transfers/{id}", client.GetTransfer).Methods("GET")
 	router.HandleFunc(baseURLPath+"/withdraws", client.GetWithdraws).Methods("GET")
 	router.HandleFunc(baseURLPath+"/withdraws/{id}", client.GetWithdraw).Methods("GET")
+	router.HandleFunc(baseURLPath+"/historian", client.GetHistorian).Methods("GET")
 	log.Fatal(http.ListenAndServe(":9999", router))
 }

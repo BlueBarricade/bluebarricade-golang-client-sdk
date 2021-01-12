@@ -9,18 +9,19 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"encoding/json"
+
 	"github.com/gorilla/mux"
 )
 
 type Address struct {
-	Class           string         `json:"$class,omitempty"`
-	Address      string           `json:"address,omitempty"`
-	Currency       string          `json:"currency,omitempty"`
-	Availablebalance     float32         `json:"available_balance,omitempty"`
-	LockBalance       float32    `json:"lock_balance,omitempty"`
+	Class            string  `json:"$class,omitempty"`
+	Address          string  `json:"address,omitempty"`
+	Currency         string  `json:"currency,omitempty"`
+	Availablebalance float32 `json:"available_balance,omitempty"`
+	LockBalance      float32 `json:"lock_balance,omitempty"`
 }
 
 // AddressService handles communication with the addresses related
