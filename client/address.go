@@ -9,11 +9,8 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 type Address struct {
@@ -41,17 +38,14 @@ func (s *AddressService) Get(ctx context.Context, id string) (*Address, *http.Re
 	return responseStruct, resp, err
 }
 
-func GetAddress(w http.ResponseWriter, r *http.Request) {
-	address := mux.Vars(r)["id"]
-
+func GetAddress(baseURL string, address string) (*Address, error) {
 	fmt.Println("GetAddress", address)
-	client := NewClient(nil)
+	client := NewClient1(baseURL, nil)
 	responseStruct, _, err := client.Addresses.Get(context.Background(), address)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }

@@ -9,12 +9,9 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type UnlockBalance struct {
@@ -55,30 +52,26 @@ func (s *UnlockBalanceService) Get(ctx context.Context, id string) (*UnlockBalan
 	return responseStruct, resp, err
 }
 
-func GetUnlockBalances(w http.ResponseWriter, r *http.Request) {
-	client := NewClient(nil)
+func GetUnlockBalances(baseURL string) ([]*UnlockBalance, error) {
+	client := NewClient1(baseURL, nil)
 	query := &Pagination{Limit: 1}
 	responseStruct, _, err := client.UnlockBalances.List(context.Background(), query)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }
 
-func GetUnlockBalance(w http.ResponseWriter, r *http.Request) {
-	address := mux.Vars(r)["id"]
+func GetUnlockBalance(baseURL string, address string) (*UnlockBalance, error) {
 
-	fmt.Println("GetAddress", address)
-	client := NewClient(nil)
+	client := NewClient1(baseURL, nil)
 	responseStruct, _, err := client.UnlockBalances.Get(context.Background(), address)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }

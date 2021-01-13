@@ -9,12 +9,9 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type Deposit struct {
@@ -55,30 +52,27 @@ func (s *DepositService) Get(ctx context.Context, id string) (*Deposit, *http.Re
 	return responseStruct, resp, err
 }
 
-func GetDeposits(w http.ResponseWriter, r *http.Request) {
-	client := NewClient(nil)
+func GetDeposits(baseURL string) ([]*Deposit, error) {
+	client := NewClient1(baseURL, nil)
 	query := &Pagination{Limit: 1}
 	responseStruct, _, err := client.Deposits.List(context.Background(), query)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }
 
-func GetDeposit(w http.ResponseWriter, r *http.Request) {
-	address := mux.Vars(r)["id"]
+func GetDeposit(baseURL string, address string) (*Deposit, error) {
 
 	fmt.Println("GetAddress", address)
-	client := NewClient(nil)
+	client := NewClient1(baseURL, nil)
 	responseStruct, _, err := client.Deposits.Get(context.Background(), address)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }

@@ -9,12 +9,9 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type Transfer struct {
@@ -88,46 +85,29 @@ func (s *TransferService) Get(ctx context.Context, id string) (*Transfer, *http.
 	return responseStruct, resp, err
 }
 
-func GetTransfers(w http.ResponseWriter, r *http.Request) {
-	client := NewClient(nil)
+func GetTransfers(baseURL string) ([]*Transfer, error) {
+	client := NewClient1(baseURL, nil)
 	query := &Pagination{Limit: 1}
 	responseStruct, _, err := client.Transfers.List(context.Background(), query)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }
 
-func GetTransfer(w http.ResponseWriter, r *http.Request) {
-	address := mux.Vars(r)["id"]
+func GetTransfer(baseURL string, address string) (*Transfer, error) {
 
-	fmt.Println("GetAddress", address)
-	client := NewClient(nil)
+	client := NewClient1(baseURL, nil)
 	responseStruct, _, err := client.Transfers.Get(context.Background(), address)
 	if err != nil {
 		fmt.Println("Error", err)
+		return nil, err
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(responseStruct)
+	return responseStruct, nil
 }
-
-// func GetHistorian(w http.ResponseWriter, r *http.Request) {
-// 	client := NewClient(nil)
-// 	query := &Pagination{Limit: 10}
-// 	responseStruct, _, err := client.Transfers.ListHistorian(context.Background(), query)
-// 	if err != nil {
-// 		fmt.Println("Error", err)
-// 	}
-
-// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(responseStruct)
-// }
 
 // GetHistorian
 func GetHistorian(baseURL string) ([]*Historian, error) {
